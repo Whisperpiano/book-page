@@ -1,0 +1,83 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:site" content="@whisperpiano">
+		<meta name="view-transition" content="same-origin">
+	</head>
+	<body>
+		<div id="content">
+			<slot />
+		</div>
+	</body>
+</html>
+<style is:global>
+	:root {
+		--accent: 136, 58, 234;
+		--accent-light: 224, 204, 250;
+		--accent-dark: 49, 10, 101;
+		--accent-gradient: linear-gradient(
+			45deg,
+			rgb(var(--accent)),
+			rgb(var(--accent-light)) 30%,
+			white 60%
+		);
+	}
+	html {
+		font-family: system-ui, sans-serif;
+		background: #ffffff;
+		background-size: 224px;
+	}
+	code {
+		font-family:
+			Menlo,
+			Monaco,
+			Lucida Console,
+			Liberation Mono,
+			DejaVu Sans Mono,
+			Bitstream Vera Sans Mono,
+			Courier New,
+			monospace;
+	}
+
+	
+</style>
+
+<script>
+if (document.startViewTransition) {
+		window.navigation.addEventListener('navigate', (event) => {
+		
+		const toUrl = new URL(event.destination.url);
+
+		if (location.origin !== toUrl.origin) return;
+
+		event.intercept({
+			async handler () {
+				const response = await fetch(toUrl.pathname);
+				const text = await response.text();
+				const data = text.match(/<body[^>]*>([\s\S]*)<\/body>/i)[1];
+				
+				document.startViewTransition(()=> {
+					document.documentElement.scrollTop = 0;
+					document.body.innerHTML = data;
+				});
+			}
+		});
+
+	});
+}
+</script>
